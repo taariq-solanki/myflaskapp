@@ -1,0 +1,32 @@
+services:
+
+  # Service 1: Flask App
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      DATABASE_URL: postgres://devboard:devboard@db:5432/devboard
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: on-failure
+
+  # Service 2: PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: devboard
+      POSTGRES_PASSWORD: devboard
+      POSTGRES_DB: devboard
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devboard -d devboard"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
