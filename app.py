@@ -9,7 +9,7 @@ def get_db():
 
 @app.route("/")
 def home():
-    return "Hello from Docker! 🐳"
+    return "Hello bachhhhho from Docker! 🐳"
 
 @app.route("/health")
 def health():
